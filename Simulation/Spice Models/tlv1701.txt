@@ -1,0 +1,170 @@
+* TLV1701
+*****************************************************************************
+* (C) Copyright 2012 Texas Instruments Incorporated. All rights reserved.                                            
+*****************************************************************************
+** This model is designed as an aid for customers of Texas Instruments.
+** TI and its licensors and suppliers make no warranties, either expressed
+** or implied, with respect to this model, including the warranties of 
+** merchantability or fitness for a particular purpose.  The model is
+** provided solely on an "as is" basis.  The entire risk as to its quality
+** and performance is with the customer.
+*****************************************************************************
+*
+** Released by: WEBENCH(R) Design Center, Texas Instruments Inc.
+* Part: TLV1701
+* Date: 12/16/2013
+* Model Type: All In One
+* Simulator: Pspice
+* Simulator Version: Pspice 16.2.0.p001
+* EVM Order Number: N/A 
+* EVM Users Guide: N/A
+* Datasheet: SBOS589 - December 2013
+*
+* Model Version: 1.0
+*
+*****************************************************************************
+*
+* Updates:
+*
+* Version 1.0 : Release to Web
+*
+*****************************************************************************
+* Notes: 
+* 1. The model reflects the following data sheet specs:
+*    IIB, PSRR, Output sink current at Vsupp = 36V, Output leakage current,
+*    Quiescent current
+*
+*****************************************************************************
+*$
+.SUBCKT TLV1701 INP INN VCC VEE OUT
+C_C4         INN INP  3p
+E_E2         N708688 0 VEE 0 1
+R_R6         INPUTP_GBW GNDF  100
+X_U65         INPUTP_GBW INPUTN_GBW INPUT_GOUT EN VCC VEE GNDF TLV1701_GBW_SLEW 
+X_U55         INPUT_OUTN INPUTN_VOS VCC VEE GNDF TLV1701_LIM_IN 
+X_U50         INN VCC TLV1701_d_ideal 
+X_U56         INPUT_OUTP INPUTP_VOS VCC VEE GNDF TLV1701_LIM_IN 
+X_U48         VEE INN TLV1701_d_ideal
+R_R5         GNDF INPUTN_GBW  100 
+E_E4         N708582 0 N708688 0 -1
+X_U38         VCC VEE EN VIMON GNDF TLV1701_IQ 
+X_U42         VICM INP INN GNDF TLV1701_VICM 
+E_E5         GNDF 0 N708586 N708582 0.5
+X_U32         OUT INPUT_VIMON VIMON GNDF TLV1701_AMETER
+C_C5         GNDF INPUT_GOUT  500nf 
+V_V5         EN GNDF 1Vdc
+R_R4         INN INPUT_OUTN  1
+X_U43         N764971 GNDF VICM VCC VEE GNDF TLV1701_VOS 
+E_E9         INPUTN_VOS INPUTN_DEL N764971 GNDF -0.5
+E_E8         INPUTP_VOS INPUTP_DEL N764971 GNDF 0.5
+X_U34         INPUT_OUTP GNDF VCC VEE VICM GNDF TLV1701_IIBP
+X_U33         INPUT_OUTN GNDF VCC VEE VICM GNDF TLV1701_IIBN
+X_U49         VEE INP TLV1701_d_ideal 
+R_R3         INP INPUT_OUTP  1
+E_E13         INPUTN_GBW INPUTP_GBW INPUTP_DEL INPUTN_DEL 1
+C_C2         INN GNDF  2p
+X_U47         INP VCC TLV1701_d_ideal
+E_E1         N708586 0 VCC 0 1
+C_C3         GNDF INP  2p
+X_U66         INPUT_GOUT INPUT_VIMON VIMON VCC VEE GNDF TLV1701_GOUT 
+.ENDS
+*$
+.subckt TLV1701_d_ideal in out
+din in out dmod
+.model dmod d
++ rs=1
++ tnom=27
+.ends
+*$
+.SUBCKT TLV1701_GBW_SLEW  VIP  VIM  VO  SHDN VCC VEE GNDF 
+.PARAM Aol = 120  
+.PARAM GBW = 1e12  
+.PARAM SRP = 14e6   
+.PARAM SRN = 1000e6 
+.PARAM IT = 0.001
+.PARAM PI = 3.141592
+.PARAM IP = {IT*MAX(1,SRP/SRN)}
+.PARAM IN = {IT*MIN(-1,-SRN/SRP)}
+.PARAM CC = {IT*MAX(1/SRP,1/SRN)}
+.PARAM FP = {GBW/PWR(10,AOL/20)}
+.PARAM RC = {1/(2*PI*CC*FP)}
+.PARAM GC = {PWR(10,AOL/20)/RC}
+G1p GNDF OUTG1p VALUE = {MAX(MIN(GC*V(SHDN,GNDF)*V(VIP,VIM),IP),IN)}
+G1n OUTG1n GNDF VALUE = {MAX(MIN(GC*V(SHDN,GNDF)*V(VIP,VIM),IP),IN)}
+RG1p OUTG1p GNDF {0.5*RC}
+Cg1dp OUTG1p GNDF {2*CC} IC=0
+RG1n OUTG1n GNDF {0.5*RC}
+Cg1dn OUTG1n GNDF {2*CC} IC=0
+G1OUT GNDF VO VALUE = {MAX(MIN(V(SHDN,GNDF)*V(OUTG1p,OUTG1n),1),0)}
+ROUT VO GNDF 1
+.ENDS
+*$
+.SUBCKT TLV1701_LIM_IN IN OUT UL LL GNDF
+.PARAM VHR = 0.1
+EO OUT GNDF VALUE = {MAX(MIN(V(IN,GNDF),V(UL,GNDF)+VHR),V(LL,GNDF)-VHR)}
+.ENDS
+*$
+.SUBCKT TLV1701_GOUT IN OUT VIMON VCC VEE GNDF
+.PARAM Ileak = 0.07u
+.PARAM Imax = 0.020
+ROUT OUT GNDF 1e10
+GOUT OUT VEE VALUE = {MAX(MIN(0.02*V(IN,GNDF)*V(OUT,VEE),Imax),Ileak)}
+.ENDS
+*$
+.SUBCKT TLV1701_IQ VCC VEE SHDN VIMON GNDF
+.PARAM IQ_NOM = 55u
+.PARAM IQ_SHDN = 1n
+.PARAM Geq = 1.3n
+.PARAM DRIFT = 0.176u
+.PARAM TNOM = 27
+GVAR VCC VEE VALUE = {(V(VCC,VEE)+ 1e-9)*Geq}
+GIQ VCC VEE VALUE = {V(SHDN,GNDF)*(1+DRIFT*(TEMP-TNOM))*IQ_NOM 
++ + (1-V(SHDN,GNDF))*IQ_SHDN}
+GOUTP VCC GNDF VALUE = {IF(V(VIMON,GNDF) > 0, V(VIMON,GNDF)*V(SHDN,GNDF),0)}
+GOUTN GNDF VEE VALUE = {IF(V(VIMON,GNDF) <= 0, V(VIMON,GNDF)*V(SHDN,GNDF),0)}
+.ENDS
+*$
+.SUBCKT TLV1701_VICM OUT INP INN GNDF
+EOUT OUT GNDF VALUE = {0.5*(V(INP,GNDF) + V(INN,GNDF))}
+.ENDS
+*$
+.SUBCKT TLV1701_AMETER  VI  VO VIMON GNDF
+.PARAM GAIN = 1
+VSENSE VI VO DC = 0
+EMETER VIMON GNDF VALUE = {I(VSENSE)*GAIN}
+.ENDS
+*$
+.SUBCKT TLV1701_VOS OUT IN VICM VCC VEE GNDF
+.PARAM SCALE = 1e-6
+.PARAM DRIFT = 4
+.PARAM VICM_SHIFT = 10
+.PARAM VCC_SHIFT = 15
+.PARAM VCC_NOM = 12
+.PARAM VOS_TYP = 4000
+EDRIFT NDRIFT 0 VALUE = {DRIFT*(TEMP - 27)}
+ESHIFT NSHIFT 0 VALUE = {VICM_SHIFT*V(VICM,GNDF)}
+EVCCSHIFT NVCCSHIFT 0 VALUE = {VCC_SHIFT*(V(VCC,VEE) - VCC_NOM)}
+EVOS OUT IN VALUE = {SCALE*(VOS_TYP + V(NDRIFT) + V(NSHIFT) + V(NVCCSHIFT))}
+.ENDS
+*$
+.SUBCKT TLV1701_IIBP OUT IN VCC VEE INP GNDF
+.PARAM SCALE = 1p
+.PARAM IIBtyp = 5000
+.PARAM m2v = 0.001
+Ein Nin 0 VALUE = {V(INP,GNDF)}
+E2v N2v 0 VALUE = {m2v*V(Nin) + IIBtyp}
+EIIBv NIIBv 0 VALUE = {V(N2v)/1}
+GOUT OUT IN VALUE = {SCALE*V(NIIBv)}
+.ENDS
+*$
+.SUBCKT TLV1701_IIBN OUT IN VCC VEE INN GNDF
+.PARAM SCALE = 1p
+.PARAM IIBtyp = 4500
+.PARAM m2v = 0.001
+Ein Nin 0 VALUE = {V(INN,GNDF)}
+E2v N2v 0 VALUE = {m2v*V(Nin) + IIBtyp}
+EIIBv NIIBv 0 VALUE = {V(N2v)/1}
+GOUT OUT IN VALUE = {SCALE*V(NIIBv)}
+.ENDS
+*$
+

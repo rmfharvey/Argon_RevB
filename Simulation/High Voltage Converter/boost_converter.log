@@ -1,0 +1,40 @@
+Circuit: * C:\Users\RossHarvey\Documents\Electronics Documents\Argon_RevB\Simulation\High Voltage Converter\boost_converter.asc
+
+Warning: Multiple definitions of model "rfn30ts6d" Type: Diode
+Limiting rise time of source v2 to 1e-007
+Limiting fall time of source v2 to 1e-007
+WARNING: Less than two connections to node 5V.  This node is used by V3.
+Direct Newton iteration for .op point succeeded.
+Heightened Def Con from 0.00112007 to 0.00112007
+Heightened Def Con from 0.00166007 to 0.00166007
+Heightened Def Con from 0.00250007 to 0.00250007
+Heightened Def Con from 0.00350007 to 0.00350007
+Heightened Def Con from 0.00382007 to 0.00382007
+Heightened Def Con from 0.00386007 to 0.00386007
+Heightened Def Con from 0.00434007 to 0.00434007
+Heightened Def Con from 0.00442007 to 0.00442007
+Heightened Def Con from 0.00442007 to 0.00442007
+Heightened Def Con from 0.00452007 to 0.00452007
+Heightened Def Con from 0.00494007 to 0.00494007
+Heightened Def Con from 0.00548007 to 0.00548007
+Heightened Def Con from 0.00578027 to 0.00578027
+
+Date: Sun Mar 27 11:02:13 2016
+Total elapsed time: 14.094 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 518377
+traniter = 518354
+tranpoints = 127523
+accept = 98148
+rejected = 29388
+matrix size = 63
+fillins = 41
+solver = Normal
+Thread vector: 28.9/12.7[5] 7.2/3.7[5] 3.1/1.7[4] 0.3/0.7[1]  2592/500
+Matrix Compiler1: 5.38 KB object code size  2.1/0.9/[0.5]
+Matrix Compiler2: 6.20 KB object code size  0.8/0.8/[0.8]
+
+
