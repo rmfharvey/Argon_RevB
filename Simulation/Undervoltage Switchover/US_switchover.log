@@ -1,0 +1,25 @@
+Circuit: * C:\Users\RossHarvey\Documents\Electronics Documents\Argon_RevB\Simulation\Undervoltage Switchover\US_switchover.asc
+
+Warning: Multiple definitions of model "rfn30ts6d" Type: Diode
+Direct Newton iteration for .op point succeeded.
+Ignoring empty pin current: Ix(u2:11)
+Ignoring empty pin current: Ix(u2:11)
+
+Date: Sat Apr 09 13:20:59 2016
+Total elapsed time: 0.172 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 2972
+traniter = 2931
+tranpoints = 1247
+accept = 1196
+rejected = 51
+matrix size = 30
+fillins = 14
+solver = Normal
+Matrix Compiler1: 2.42 KB object code size  0.8/0.4/[0.3]
+Matrix Compiler2: off  [0.4]/0.5/0.7
+
+
